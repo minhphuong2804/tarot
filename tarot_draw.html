@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Rút Bài Tarot</title>
+  <style>
+    body { font-family: 'Arial', sans-serif; background: #1a1a1a; color: #f5f5f5; text-align: center; padding: 50px; }
+    button { padding: 10px 20px; font-size: 18px; background: #6a1b9a; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #8e24aa; }
+    #result { margin-top: 30px; font-size: 20px; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🔮 Hôm nay Vũ Trụ muốn bạn biết điều gì?</h1>
+  <button onclick="drawCard()">Rút bài Tarot</button>
+  <div id="result"></div>
+
+  <script>
+    const tarotDeck = [
+      { name: "The Fool", meaning: "Sự khởi đầu, hành trình mới, tự do." },
+      { name: "The Magician", meaning: "Hành động, sáng tạo, tiềm năng." },
+      { name: "The High Priestess", meaning: "Trực giác, bí mật, kiến thức ẩn." },
+      { name: "The Empress", meaning: "Tình mẫu tử, sáng tạo, nuôi dưỡng." },
+      { name: "The Emperor", meaning: "Quyền lực, cấu trúc, ổn định." },
+      { name: "The Hierophant", meaning: "Truyền thống, niềm tin, học hỏi." },
+      { name: "The Lovers", meaning: "Tình yêu, lựa chọn, hòa hợp." },
+      { name: "The Chariot", meaning: "Chiến thắng, kiểm soát, ý chí mạnh." },
+      { name: "Strength", meaning: "Can đảm, kiên nhẫn, kiểm soát nội tâm." },
+      { name: "The Hermit", meaning: "Ẩn mình, soi sáng nội tâm, tìm kiếm." },
+      { name: "Wheel of Fortune", meaning: "Vận mệnh, thay đổi, chu kỳ." },
+      { name: "Justice", meaning: "Công lý, sự thật, nhân quả." },
+      { name: "The Hanged Man", meaning: "Buông bỏ, nhìn nhận mới, hy sinh." },
+      { name: "Death", meaning: "Kết thúc, chuyển hóa, tái sinh." },
+      { name: "Temperance", meaning: "Cân bằng, hòa hợp, tiết chế." },
+      { name: "The Devil", meaning: "Ràng buộc, cám dỗ, bóng tối nội tâm." },
+      { name: "The Tower", meaning: "Biến động, sụp đổ, bất ngờ." },
+      { name: "The Star", meaning: "Hy vọng, chữa lành, hướng dẫn." },
+      { name: "The Moon", meaning: "Ảo ảnh, trực giác, sợ hãi tiềm ẩn." },
+      { name: "The Sun", meaning: "Hạnh phúc, tích cực, khai sáng." },
+      { name: "Judgement", meaning: "Thức tỉnh, phán xét, tái sinh." },
+      { name: "The World", meaning: "Hoàn thành, thành tựu, chu kỳ trọn vẹn." },
+      { name: "Ace of Wands", meaning: "Cảm hứng, khởi đầu mới đầy đam mê." },
+      { name: "Two of Wands", meaning: "Lập kế hoạch, khám phá, tầm nhìn." },
+      { name: "Three of Wands", meaning: "Cơ hội mới, chờ đợi thành quả." },
+      { name: "Four of Wands", meaning: "Ăn mừng, ổn định, thành tựu." },
+      { name: "Five of Wands", meaning: "Cạnh tranh, xung đột, thử thách." },
+      { name: "Six of Wands", meaning: "Chiến thắng, công nhận, tự hào." },
+      { name: "Seven of Wands", meaning: "Phòng thủ, bảo vệ quan điểm." },
+      { name: "Eight of Wands", meaning: "Tăng tốc, tin tức đến nhanh." },
+      { name: "Nine of Wands", meaning: "Kiên cường, đề phòng, ranh giới." },
+      { name: "Ten of Wands", meaning: "Gánh nặng, trách nhiệm, mệt mỏi." },
+      { name: "Page of Wands", meaning: "Tò mò, khám phá, năng lượng trẻ." },
+      { name: "Knight of Wands", meaning: "Hành động táo bạo, nhiệt huyết." },
+      { name: "Queen of Wands", meaning: "Tự tin, quyến rũ, lãnh đạo." },
+      { name: "King of Wands", meaning: "Tầm nhìn, quyền lực, cảm hứng." },
+      { name: "Ace of Cups", meaning: "Tình yêu mới, cảm xúc tràn đầy." },
+      { name: "Two of Cups", meaning: "Quan hệ đối tác, kết nối sâu sắc." },
+      { name: "Three of Cups", meaning: "Tình bạn, lễ hội, niềm vui." },
+      { name: "Four of Cups", meaning: "Chán nản, bỏ lỡ cơ hội, tự suy xét." },
+      { name: "Five of Cups", meaning: "Mất mát, tiếc nuối, buông bỏ." },
+      { name: "Six of Cups", meaning: "Ký ức, hoài niệm, tuổi thơ." },
+      { name: "Seven of Cups", meaning: "Ảo vọng, lựa chọn, phân tâm." },
+      { name: "Eight of Cups", meaning: "Từ bỏ, tìm kiếm ý nghĩa sâu hơn." },
+      { name: "Nine of Cups", meaning: "Thỏa mãn, điều ước thành hiện thực." },
+      { name: "Ten of Cups", meaning: "Hạnh phúc gia đình, viên mãn." },
+      { name: "Page of Cups", meaning: "Tin vui, trực giác, cảm xúc mới." },
+      { name: "Knight of Cups", meaning: "Lãng mạn, lý tưởng hóa, quyến rũ." },
+      { name: "Queen of Cups", meaning: "Đồng cảm, nuôi dưỡng, tâm hồn sâu sắc." },
+      { name: "King of Cups", meaning: "Điềm tĩnh, kiểm soát cảm xúc, chín chắn." },
+      { name: "Ace of Swords", meaning: "Sự thật, ý tưởng mới, đột phá." },
+      { name: "Two of Swords", meaning: "Lưỡng lự, khó lựa chọn, bế tắc." },
+      { name: "Three of Swords", meaning: "Đau lòng, phản bội, tan vỡ." },
+      { name: "Four of Swords", meaning: "Nghỉ ngơi, hồi phục, rút lui." },
+      { name: "Five of Swords", meaning: "Tranh cãi, xung đột, thắng lợi cay đắng." },
+      { name: "Six of Swords", meaning: "Chuyển đổi, di chuyển, chữa lành." },
+      { name: "Seven of Swords", meaning: "Lừa dối, chiến lược, che giấu." },
+      { name: "Eight of Swords", meaning: "Bế tắc, giới hạn, lo sợ." },
+      { name: "Nine of Swords", meaning: "Lo âu, ám ảnh, mất ngủ." },
+      { name: "Ten of Swords", meaning: "Tận cùng, đau đớn, chấm dứt." },
+      { name: "Page of Swords", meaning: "Tò mò, thông minh, quan sát." },
+      { name: "Knight of Swords", meaning: "Hành động nhanh, quyết đoán." },
+      { name: "Queen of Swords", meaning: "Logic, thẳng thắn, khách quan." },
+      { name: "King of Swords", meaning: "Lãnh đạo trí tuệ, công lý, uy tín." },
+      { name: "Ace of Pentacles", meaning: "Cơ hội vật chất, nền tảng vững chắc." },
+      { name: "Two of Pentacles", meaning: "Cân bằng, đa nhiệm, quản lý tốt." },
+      { name: "Three of Pentacles", meaning: "Hợp tác, kỹ năng, công việc nhóm." },
+      { name: "Four of Pentacles", meaning: "Chiếm hữu, sợ mất mát, bảo thủ." },
+      { name: "Five of Pentacles", meaning: "Nghèo đói, thiếu thốn, cô lập." },
+      { name: "Six of Pentacles", meaning: "Cho đi, nhận lại, công bằng." },
+      { name: "Seven of Pentacles", meaning: "Kiên nhẫn, đánh giá lại, tiến độ." },
+      { name: "Eight of Pentacles", meaning: "Rèn luyện, chuyên tâm, kỹ năng." },
+      { name: "Nine of Pentacles", meaning: "Tự lập, thành tựu, xa hoa." },
+      { name: "Ten of Pentacles", meaning: "Di sản, ổn định tài chính, gia đình." },
+      { name: "Page of Pentacles", meaning: "Khởi đầu thực tế, học tập, tiềm năng." },
+      { name: "Knight of Pentacles", meaning: "Chăm chỉ, đáng tin, có kế hoạch." },
+      { name: "Queen of Pentacles", meaning: "Nuôi dưỡng, thực tế, ổn định." },
+      { name: "King of Pentacles", meaning: "Giàu có, thành công, an toàn." }
+    ];
+
+    function drawCard() {
+      const card = tarotDeck[Math.floor(Math.random() * tarotDeck.length)];
+      document.getElementById("result").innerText = `${card.name} – ${card.meaning}`;
+    }
+  </script>
+</body>
+</html>
